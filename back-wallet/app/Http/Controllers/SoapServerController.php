@@ -18,7 +18,7 @@ class SoapServerController extends Controller
 
     public function handle(Request $request)
     {
-        $route_wsdl = storage_path('app/soap/wallet.wsdl');
+        $route_wsdl = storage_path('soap/wallet.wsdl');
         $server = new SoapServer($route_wsdl);
         
         // Establece el controlador actual como objeto SOAP
@@ -46,6 +46,16 @@ class SoapServerController extends Controller
     {
         try {
             $result = $this->walletService->registerClient($request->document, $request->names, $request->email, $request->cellphone);
+            return $result;
+        } catch (\Exception $e) {
+            return $this->generateSoapFault('Server', $e->getMessage());
+        }
+    }
+    
+    public function chargeBalance($request)
+    {
+        try {
+            $result = $this->walletService->chargeBalance($request->document, $request->cellphone, $request->value);
             return $result;
         } catch (\Exception $e) {
             return $this->generateSoapFault('Server', $e->getMessage());
