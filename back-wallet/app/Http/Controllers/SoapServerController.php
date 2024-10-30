@@ -55,7 +55,7 @@ class SoapServerController extends Controller
     public function chargeBalance($request)
     {
         try {
-            $result = $this->walletService->chargeBalance($request->document, $request->cellphone, $request->value);
+            $result = $this->walletService->chargeBalance($request->document, $request->cellphone, $request->amount);
             return $result;
         } catch (\Exception $e) {
             return $this->generateSoapFault('Server', $e->getMessage());

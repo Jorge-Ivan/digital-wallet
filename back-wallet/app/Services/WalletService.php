@@ -3,6 +3,7 @@
 namespace App\Services;
 
 use App\Models\Client;
+use App\Models\Transaction;
 
 class WalletService
 {
@@ -67,21 +68,14 @@ class WalletService
         }
     }
 
-    public function chargeBalance($document, $cellphone, $value)
+    public function chargeBalance($document, $cellphone, $amount)
     {
         // Validate input
-        if (empty($document) || empty($cellphone) || empty($value)) {
+        if (empty($document) || empty($cellphone) || empty($amount) || !is_numeric($amount) || $amount<=0) {
             return [
                 'status' => 'false',
                 'cod_error' => '01',
-                'message_error' => 'All fields are required. One or more parameters are null.',
-                'data' => null,
-            ];
-        }elseif(!is_numeric($value) || $value<=0) {
-            return [
-                'status' => 'false',
-                'cod_error' => '01',
-                'message_error' => 'Value of charge is invalid.',
+                'message_error' => 'All fields are required and amount must be a positive number.',
                 'data' => null,
             ];
         }
@@ -98,16 +92,23 @@ class WalletService
             ];
         }
 
-        $client->wallet_balance += $value;
+        $client->wallet_balance += $amount;
+
+        $transaction = new Transaction();
+        $transaction->amount = $amount;
+        $transaction->client_id = $client->id;
+        $transaction->transaction_type = 'recharge';
+        $transaction->sesion_id = bin2hex(random_bytes(16));
 
         try {
+            $transaction->save();
             $client->save();
 
             return [
                 'status' => 'true',
                 'cod_error' => '00',
                 'message_error' => 'Charge registered successfully.',
-                'data' => $client,
+                'data' => $transaction,
             ];
         } catch (\Exception $e) {
             return [

@@ -18,6 +18,8 @@ class Transaction extends Model
         'client_id',
         'transaction_type',
         'amount',
+        'session_id',
+        'token',
         'created_at',
     ];
 

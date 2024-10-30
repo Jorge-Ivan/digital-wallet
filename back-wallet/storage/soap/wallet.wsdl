@@ -23,7 +23,7 @@
                     <xsd:sequence>
                         <xsd:element name="document" type="xsd:string"/>
                         <xsd:element name="cellphone" type="xsd:string"/>
-                        <xsd:element name="value" type="xsd:nonNegativeInteger"/>
+                        <xsd:element name="amount" type="xsd:decimal"/>
                     </xsd:sequence>
                 </xsd:complexType>
             </xsd:element>
