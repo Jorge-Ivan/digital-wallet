@@ -1,0 +1,93 @@
+<?xml version="1.0"?>
+<definitions name="WalletService"
+             targetNamespace="http://digital-wallet.com/wallet"
+             xmlns:tns="http://digital-wallet.com/wallet"
+             xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/"
+             xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+             xmlns="http://schemas.xmlsoap.org/wsdl/">
+
+    <types>
+        <xsd:schema targetNamespace="http://digital-wallet.com/wallet">
+            <xsd:element name="RegisterUserRequest">
+                <xsd:complexType>
+                    <xsd:sequence>
+                        <xsd:element name="document" type="xsd:string"/>
+                        <xsd:element name="names" type="xsd:string"/>
+                        <xsd:element name="email" type="xsd:string"/>
+                        <xsd:element name="cellphone" type="xsd:string"/>
+                    </xsd:sequence>
+                </xsd:complexType>
+            </xsd:element>
+            <xsd:element name="ChargeBalanceRequest">
+                <xsd:complexType>
+                    <xsd:sequence>
+                        <xsd:element name="document" type="xsd:string"/>
+                        <xsd:element name="cellphone" type="xsd:string"/>
+                        <xsd:element name="value" type="xsd:nonNegativeInteger"/>
+                    </xsd:sequence>
+                </xsd:complexType>
+            </xsd:element>
+            <xsd:element name="WalletResponse">
+                <xsd:complexType>
+                    <xsd:sequence>
+                        <xsd:element name="status" type="xsd:string"/>
+                        <xsd:element name="cod_error" type="xsd:string"/>
+                        <xsd:element name="message_error" type="xsd:string"/>
+                        <xsd:element name="data" type="xsd:string" minOccurs="0"/>
+                    </xsd:sequence>
+                </xsd:complexType>
+            </xsd:element>
+        </xsd:schema>
+    </types>
+
+    <message name="RegisterUserRequest">
+        <part name="parameters" element="tns:RegisterUserRequest"/>
+    </message>
+
+    <message name="ChargeBalanceRequest">
+        <part name="parameters" element="tns:ChargeBalanceRequest"/>
+    </message>
+
+    <message name="WalletResponse">
+        <part name="parameters" element="tns:WalletResponse"/>
+    </message>
+
+    <portType name="WalletServicePortType">
+        <operation name="registerUser">
+            <input message="tns:RegisterUserRequest"/>
+            <output message="tns:WalletResponse"/>
+        </operation>
+        <operation name="chargeBalance">
+            <input message="tns:ChargeBalanceRequest"/>
+            <output message="tns:WalletResponse"/>
+        </operation>
+    </portType>
+
+    <binding name="WalletServiceBinding" type="tns:WalletServicePortType">
+        <soap:binding style="document" transport="http://schemas.xmlsoap.org/soap/http"/>
+        <operation name="registerUser">
+            <soap:operation soapAction="http://digital-wallet.com/wallet/registerUser"/>
+            <input>
+                <soap:body use="literal" namespace="http://digital-wallet.com/wallet"/>
+            </input>
+            <output>
+                <soap:body use="literal" namespace="http://digital-wallet.com/wallet"/>
+            </output>
+        </operation>
+        <operation name="chargeBalance">
+            <soap:operation soapAction="http://digital-wallet.com/wallet/chargeBalance"/>
+            <input>
+                <soap:body use="literal" namespace="http://digital-wallet.com/wallet"/>
+            </input>
+            <output>
+                <soap:body use="literal" namespace="http://digital-wallet.com/wallet"/>
+            </output>
+        </operation>
+    </binding>
+
+    <service name="WalletService">
+        <port name="WalletServicePort" binding="tns:WalletServiceBinding">
+            <soap:address location="http://localhost:8000/api/soap"/>
+        </port>
+    </service>
+</definitions>
